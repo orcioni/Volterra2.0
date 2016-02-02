@@ -44,7 +44,7 @@ function [Vkernel, Wkernel] = ident_volt_20(order,memspan,sigma_noise,dim_input,
 swaptable = [100,2; 500,4; 1e3,4; 5e3,25; 1e4,31; 5e4,17; 1e5,10; 5e5,10; 1e6,9];
 
 % Used in order to have reproducible results
-randn("seed",1);
+randn('seed',1);
 
 %%%%%%%%%%%%%%%% disp('if we have the swaptable.mat file we use it')
 try

@@ -44,7 +44,7 @@ function [Vkernel, Wkernel] = ident_volt(order,memspan,sigma_noise,dim_input,des
 
 swaptable = [100,2; 500,4; 1e3,4; 5e3,25; 1e4,31; 5e4,17; 1e5,10; 5e5,10; 1e6,9];
 
-randn("seed",1);
+randn('seed',1);
 xn = sigma_noise*randn(dim_input,1);
 A = sigma_noise^2;
 yn = feval(des_system,xn);
