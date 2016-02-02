@@ -42,24 +42,16 @@
 
 function [Vkernel, Wkernel] = ident_volt(order,memspan,varargin)
 
-switch nargin
-    case 3
-        sigma_noise = varargin{1};
-        dim_input   = varargin{2};
-        des_system  = varargin{3};
-        randn('seed',1);
-        xn = sigma_noise*randn(dim_input,1);
-        A = sigma_noise^2;
-        yn = feval(des_system,xn);
-    case 2
-        xn = varargin{1};
-        yn = varargin{2};
-        A = var(xn);
-    otherwise
-        error('Unexpected number of arguments');
-end
+if nargin == 3
+    
+sigma_noise,dim_input,des_system)
 
 swaptable = [100,2; 500,4; 1e3,4; 5e3,25; 1e4,31; 5e4,17; 1e5,10; 5e5,10; 1e6,9];
+
+randn('seed',1);
+xn = sigma_noise*randn(dim_input,1);
+A = sigma_noise^2;
+yn = feval(des_system,xn);
 
 %%%%%%%%%%%%%%%% disp('if we have the swaptable.mat file we use it')
 try
