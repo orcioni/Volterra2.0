@@ -70,7 +70,7 @@ if order >= 1
     yn = feval(des_system,xn);
 	k0 = LeeSch0(yn,1);
 	Wkernel.k1 = LeeSch1(xn,yn,1,memspan-1,A(2),swap,0);
-    [Vkernel.h0, Vkernel.h1] = Wiener2Volterra_new2(A, Wkernel.k0, Wkernel.k1);
+    [Vkernel.h0, Vkernel.h1] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1);
 endif
 
 if order >= 2
@@ -82,7 +82,7 @@ if order >= 2
      koff2     = LeeSch2(xn,yn,1,memspan-1,A(3),swap,0);
     kdiag2    = VWdiag2(xn,yn,1,memspan-1,A(3),0, k0);
 	 Wkernel.k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
-    [Vkernel.h0, Vkernel.h1, Vkernel.h2] = Wiener2Volterra_new2(A, Wkernel.k0, Wkernel.k1, Wkernel.k2);
+    [Vkernel.h0, Vkernel.h1, Vkernel.h2] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2);
 endif
 
 if order >= 3
@@ -102,7 +102,7 @@ if order >= 3
     kdiag3     = VWdiag3(xn,yn,1,memspan-1,A(4),0,k1);
 	Wkernel.k3 = NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-    [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3] = Wiener2Volterra_new2(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3);
+    [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3);
 endif
 
 if order >= 4
@@ -126,7 +126,7 @@ if order >= 4
     kdiag4    = VWdiag4(xn,yn,1,memspan-1,A(5),0,k0,k2);
     Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
 
-	[Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4] = Wiener2Volterra_new2(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4);
+	[Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4);
 endif
 
 if order >= 5
@@ -151,5 +151,5 @@ if order >= 5
 	koff5     = LeeSch5(xn,yn,1,memspan-1,A(6),swap,0);
     kdiag5    = VWdiag5(xn,yn,1,memspan-1,A(6),0,k1,k3);
     Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
-    [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4,Vkernel.h5] = Wiener2Volterra_new2(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
+    [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4,Vkernel.h5] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
 endif

@@ -1,5 +1,5 @@
 % Copyright (C) 2006 Massimiliano Pirani
-% Copyright (C) 2014 Simone Orcioni
+% Copyright (C) 2014-2016 Simone Orcioni
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -27,15 +27,26 @@
 % Lee-Schetzen method for Volterra filter identification. Multidimensional
 % Systems and Signal Processing, 16(3):265-284, 2005.
 
+%% oldstyle function format
 %function [Vkernel, Wkernel] = ident_volt(order,memspan,sigma_noise,dim_input,des_system)
+% sigmanoise is the vector of the sigma of the noise to be used in the identification
+%
+% dim_input is the length of the input vector to be used in the identification
+%
+% des_system is a string containing the name of the funtion implementing the system to be
+%	indentified
+
+%% other compatible function formats
+%function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,des_system)
+%function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,output_vector)
 %
 % order is the order of the kernel to be identified
 %
 % memspan is the memory span of the kernel
 %
-% sigmanoise is the vector of the sigma of the noise to be used in the identification
+% input_vector is the input vector to be used in the identification
 %
-% dim_input is the length of the input vector to be used in the identification
+% output_vector is the output vector to be used in the identification
 %
 % des_system is a string containing the name of the funtion implementing the system to be
 %	indentified
@@ -52,9 +63,14 @@ switch nargin
         A = sigma_noise^2;
         yn = feval(des_system,xn);
     case 2
-        xn = varargin{1};
-        yn = varargin{2};
-        A = var(xn);
+         if ischar(varargin{2})
+            xn = varargin{1};
+            yn = feval(varargin{2},xn);
+         else
+            xn = varargin{1};
+            yn = varargin{2};
+         end
+         A = var(xn);
     otherwise
         error('Unexpected number of arguments');
 end
@@ -72,39 +88,39 @@ end
 
 if order >= 0
 	Wkernel.k0 = LeeSch0(yn,1);
-endif
+end
 
 if order >= 1
 	Wkernel.k1 = LeeSch1(xn,yn,1,memspan-1,A,swap,0);
-endif
+end
 
 if order >= 2
 	Wkernel.k2=zeros(memspan,memspan);
 	koff2     = LeeSch2(xn,yn,1,memspan-1,A,swap,0);
 	kdiag2    = VWdiag2(xn,yn,1,memspan-1,A,0,Wkernel.k0);
 	Wkernel.k2= NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
-endif
+end
 
 if order >= 3
 	Wkernel.k3=zeros(memspan,memspan,memspan);
 	koff3     = LeeSch3(xn,yn,1,memspan-1,A,swap,0);
 	kdiag3    = VWdiag3(xn,yn,1,memspan-1,A,0,Wkernel.k1);
 	Wkernel.k3= NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
-endif
+end
 
 if order >= 4
 	Wkernel.k4=zeros(memspan,memspan,memspan,memspan);
 	koff4     = LeeSch4(xn,yn,1,memspan-1,A,swap,0);
 	kdiag4    = VWdiag4(xn,yn,1,memspan-1,A,0,Wkernel.k0,Wkernel.k2);
 	Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
-endif
+end
 
 if order >= 5
 	Wkernel.k5=zeros(memspan,memspan,memspan,memspan,memspan);
 	koff5 = VWoffdiag(xn,yn,5,1,length(Wkernel.k5)-1,A,swap,0);
 	kdiag5     = VWdiag(xn,yn,5,1,length(Wkernel.k5)-1,A,0,Wkernel.k1,Wkernel.k3);
 	Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
-endif
+end
 
 
 %%%%%%%%disp('Converting the Wiener system in the equivalent Volterra filter')

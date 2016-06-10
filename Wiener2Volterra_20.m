@@ -40,7 +40,7 @@
 function varargout=Wiener2Volterra_20(A,k0,k1,k2,k3,k4,k5)
 
 if exist('k1','var')
-    if size(k1,1)==1,k1=k1.';end
+    if size(k1,1)==1,k1=k1';end
 end
 
 
