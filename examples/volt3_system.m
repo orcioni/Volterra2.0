@@ -19,7 +19,7 @@
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
-					   % format is also provided):
+% format is also provided):
 % Simone Orcioni. Improving the approximation ability of Volterra series identified
 % with a cross-correlation method. Nonlinear Dynamic, 2014.
 %

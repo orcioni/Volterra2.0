@@ -71,8 +71,15 @@ switch nargin
             swap=swapassess(dim_input,swaptable);
         end
 
-        %% Added for Replacing Discouraged Syntaxes of rand and randn
-        rng(1);
+        if is_octave
+          randn('seed',1);
+        else
+            %% Added for Replacing Discouraged Syntaxes of rand and randn
+            % version that ensure using same random generator used in 
+            % for published results.
+            rng(1,'v4');
+        end
+
         A = sigma_noise.^2;
         x0=randn(dim_input,1);
         if order >= 0

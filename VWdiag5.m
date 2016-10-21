@@ -15,7 +15,7 @@
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 %
 % If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
+% or Simone Orcioni, DEIT, UniversitÃ  Politecnica delle Marche,
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
@@ -70,7 +70,7 @@ for sgm1=0:R
                 p4=[zeros(sgm4,1);xn(os:end-sgm4-delay)];
                 for sgm5=sgm4:R
                     ind=sort([sgm1 sgm2 sgm3 sgm4 sgm5]);
-                    if (ind(5)>ind(4)) & (ind(4)>ind(3)) & (ind(3)>ind(2)) & (ind(2)>ind(1)) 
+                    if (ind(5)>ind(4)) && (ind(4)>ind(3)) && (ind(3)>ind(2)) && (ind(2)>ind(1)) 
                         break
                     else 
                         Sgm1=sgm1+1;Sgm2=sgm2+1;Sgm3=sgm3+1;Sgm4=sgm4+1;Sgm5=sgm5+1;

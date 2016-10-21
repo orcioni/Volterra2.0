@@ -19,7 +19,7 @@
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
-					   % format is also provided):
+% format is also provided):
 % Simone Orcioni. Improving the approximation ability of Volterra series identified
 % with a cross-correlation method. Nonlinear Dynamic, 2014.
 %
@@ -32,7 +32,11 @@ function mseyn = test_sigma(Vkernel,orderid,sigmastart, sigmaend,test_system)
 sigma_index_start=log10(sigmastart/4)/log10(2);
 sigma_index_stop=log10(sigmaend*4)/log10(2);
 sigmav=2.^[sigma_index_start:(sigma_index_stop-sigma_index_start)/(5*log10(sigmaend*4/sigmastart)/log10(2)):sigma_index_stop];
-randn('seed',3);
+if is_octave
+    randn('seed',1);
+else
+rng(3);
+end
 xn = randn(0.5e6,1);
 y = zeros(size(xn));
 mseyn = zeros(length(sigmav),2);
