@@ -28,7 +28,7 @@
 % It's a wrapper function to easily call a kernel identification of order
 % from 0 to 5.
 % The input parameters are passed to the function LeeSchN of order N.
-% See LeeSchN functions help for details.
+% See LeeSchN function help for details.
 
 function k=VWoffdiag(xn,yn,ord,os,R,A,swap,delay)
 

@@ -16,7 +16,7 @@
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 %
 % If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Universit?? Politecnica delle Marche,
+% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following papers:
@@ -58,8 +58,12 @@ switch nargin
         sigma_noise = varargin{1};
         dim_input   = varargin{2};
         des_system  = varargin{3};
+        if is_octave
+          randn('seed',1);
+        else
         %% Added for Replacing Discouraged Syntaxes of rand and randn
         rng(1);
+        end
         xn = sigma_noise*randn(dim_input,1);
         A = sigma_noise^2;
         yn = feval(des_system,xn);

@@ -23,7 +23,7 @@
 % Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in 
 % Lee-Schetzen method for Volterra filter identification. Multidimensional 
 % Systems and Signal Processing, 16(3):265-284, 2005.
-    
+
 % function [h0,h1,h2,...,hp]=Wiener2Volterra(A, k0, k1, k2, k3, k4, k5)
 %
 % Wiener kernels h0,h1,h2,...,h5 are obtained from Wiener kernels. 
@@ -42,17 +42,17 @@ switch nargin
 case 2 % zero 
     varargout{1}=k0;
     
-case 3 % primo ordine
+case 3 % first order
     varargout{1}=k0;
     varargout{2}=k1;
     
-case 4 % secondo ordine
+case 4 % second order
         
     varargout{1}=k0+k02f(k2,A);
     varargout{2}=k1;
     varargout{3}=k2;
     
-case 5 % terzo ordine
+case 5 % third order
     
     R1=size(k1,1);
     R3=size(k3,1);
@@ -61,7 +61,7 @@ case 5 % terzo ordine
     varargout{3}=k2;%h2
     varargout{4}=k3;%h3
 
-case 6 % quarto ordine
+case 6 % fourth order
     
     R1=size(k1,1);
     R2=size(k2,1);
@@ -80,7 +80,7 @@ case 6 % quarto ordine
     varargout{5}=k4;%h4
 
     
-case 7 % quinto ordine
+case 7 % fifth order
     
     R1=size(k1,1);
     R2=size(k2,1);
@@ -110,5 +110,5 @@ case 7 % quinto ordine
     varargout{6}=k5;%h5
     
 otherwise
-    error('il numero dei parametri in ingresso non è valido');
+    error('input parameter number is not valid');
 end

@@ -15,7 +15,7 @@
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 %
 % If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Universit‡ Politecnica delle Marche,
+% or Simone Orcioni, DEIT, Universit√† Politecnica delle Marche,
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
@@ -41,7 +41,7 @@
 % delay can be also used as a means to trim the lower (in time lag sense) 
 % part of kernels.
 %
-% out will be the total ord-order Volterra filter output to the xn input 
+% out will be the total order Volterra filter output to the xn input 
 % stimulus. 
 % See also BasicVoltFilt (suggested)
 
