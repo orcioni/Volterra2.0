@@ -15,7 +15,7 @@
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 %
 % If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Universitàecho Politecnica delle Marche,
+% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
 % via Brecce Bianche, 12 - 60131 Ancona, Italy.
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
