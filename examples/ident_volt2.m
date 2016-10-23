@@ -28,7 +28,7 @@
 % Systems and Signal Processing, 16(3):265-284, 2005.
 
 memspan=10;
-sigma_noise=[0.2,0.4,0.8,1.6];
+sigma_noise=[0.2,0.4,0.8];
 
 disp('Identification with multiple variances')
 Vkernel_n2 = ident_volt_20(2,memspan,sigma_noise,1e6,'volt2_system');
@@ -40,9 +40,6 @@ disp(['Identification with sigma = ' num2str(sigma_noise(2))]);
 Vkernel04 = ident_volt(2,memspan,sigma_noise(2),1e6,'volt2_system');
 disp(['Identification with sigma = ' num2str(sigma_noise(3))]);
 Vkernel08 = ident_volt(2,memspan,sigma_noise(3),1e6,'volt2_system');
-disp(['Identification with sigma = ' num2str(sigma_noise(4))]);
-Vkernel16 = ident_volt(2,memspan,sigma_noise(4),1e6,'volt2_system');
-
 
 xn = randn(1e6,1);
 
@@ -52,8 +49,6 @@ disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(2
 mseyn04 = test_sigma(Vkernel04, 2, 0.2,1.6, 'volt2_system');
 disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(3))]);
 mseyn08 = test_sigma(Vkernel08, 2, 0.2,1.6, 'volt2_system');
-disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(4))]);
-mseyn16 = test_sigma(Vkernel16, 2, 0.2,1.6, 'volt2_system');
 disp('Test of Volterra system  identified whith multiple variances');
 mseyn_n2 = test_sigma(Vkernel_n2, 2, 0.2,1.6, 'volt2_system');
 
@@ -65,14 +60,12 @@ h2 =  9/54*h2n;
 msenh3(1)=mse(Vkernel02.h2,h2)/mse(h2);
 msenh3(2)=mse(Vkernel04.h2,h2)/mse(h2);
 msenh3(3)=mse(Vkernel08.h2,h2)/mse(h2);
-msenh3(4)=mse(Vkernel16.h2,h2)/mse(h2);
 
 msenh3_n2=mse(Vkernel_n2.h2,h2)/mse(h2);
 
 msenh1(1)=mse(Vkernel02.h1,h1)/mse(h1);
 msenh1(2)=mse(Vkernel04.h1,h1)/mse(h1);
 msenh1(3)=mse(Vkernel08.h1,h1)/mse(h1);
-msenh1(4)=mse(Vkernel16.h1,h1)/mse(h1);
 
 msenh1_n2=mse(Vkernel_n2.h1,h1)/mse(h1);
 
@@ -86,7 +79,6 @@ xl(2) = mseyn02(end,1);
 xlim(xl);
 loglog(mseyn04(:,1),sqrt(mseyn04(:,2)),'-or');
 loglog(mseyn08(:,1),sqrt(mseyn08(:,2)),'-or');
-loglog(mseyn16(:,1),sqrt(mseyn16(:,2)),'-or');
 
 loglog(mseyn_n2(:,1),sqrt(mseyn_n2(:,2)),'-xb');
 

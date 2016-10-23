@@ -27,18 +27,10 @@
 % Lee-Schetzen method for Volterra filter identification. Multidimensional
 % Systems and Signal Processing, 16(3):265-284, 2005.
 
-%% oldstyle function format
-%function [Vkernel, Wkernel] = ident_volt(order,memspan,sigma_noise,dim_input,des_system)
-% sigmanoise is the vector of the sigma of the noise to be used in the identification
-%
-% dim_input is the length of the input vector to be used in the identification
-%
-% des_system is a string containing the name of the funtion implementing the system to be
-%	indentified
 
-%% other compatible function formats
-%function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,des_system)
 %function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,output_vector)
+%function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,des_system)
+%function [Vkernel, Wkernel] = ident_volt(order,memspan,sigma_noise,dim_input,des_system)
 %
 % order is the order of the kernel to be identified
 %
@@ -50,6 +42,10 @@
 %
 % des_system is a string containing the name of the funtion implementing the system to be
 %	indentified
+%
+% sigmanoise is the vector of the sigma of the noise to be used in the identification
+%
+% dim_input is the length of the input vector to be used in the identification
 
 function [Vkernel, Wkernel] = ident_volt(order,memspan,varargin)
 
