@@ -28,42 +28,37 @@
 % Systems and Signal Processing, 16(3):265-284, 2005.
 
 memspan=10;
-sigma_noise=[0.3,0.6,1.2,2.4];
+sigma_noise=[0.2,0.4,0.8];
 
 disp('Identification with multiple variances')
-Vkernel_n2 = ident_volt_20(2,memspan,sigma_noise,4e6,'nl_system');
+Vkernel_n2 = ident_volt_20(2,memspan,[sigma_noise(1) sigma_noise(2) sigma_noise(3)],4e6,'nl_system');
 disp(['Identification with sigma = ' num2str(sigma_noise(1))]);
 Vkernel03 = ident_volt(2,memspan,sigma_noise(1),4e6,'nl_system');
 disp(['Identification with sigma = ' num2str(sigma_noise(2))]);
 Vkernel06 = ident_volt(2,memspan,sigma_noise(2),4e6,'nl_system');
 disp(['Identification with sigma = ' num2str(sigma_noise(3))]);
 Vkernel12 = ident_volt(2,memspan,sigma_noise(3),4e6,'nl_system');
-disp(['Identification with sigma = ' num2str(sigma_noise(4))]);
-Vkernel24 = ident_volt(2,memspan,sigma_noise(4),4e6,'nl_system');
 
 xn = randn(1e6,1);
 
 disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(1))]);
-mseyn03 = test_sigma(Vkernel03, 2, 0.3,2.4, 'nl_system');
+mseyn03 = test_sigma(Vkernel03, 2, 0.2,1.6, 'nl_system');
 disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(2))]);
-mseyn06 = test_sigma(Vkernel06, 2, 0.3,2.4, 'nl_system');
+mseyn06 = test_sigma(Vkernel06, 2, 0.2,1.6, 'nl_system');
 disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(3))]);
-mseyn12 = test_sigma(Vkernel12, 2, 0.3,2.4, 'nl_system');
-disp(['Test of Volterra system  identified whith sigma = ' num2str(sigma_noise(4))]);
-mseyn24 = test_sigma(Vkernel24, 2, 0.3,2.4, 'nl_system');
+mseyn12 = test_sigma(Vkernel12, 2, 0.2,1.6, 'nl_system');
 
 disp('Test of Volterra system  identified whith multiple variances');
-mseyn_n2 = test_sigma(Vkernel_n2, 2, 0.3,2.4, 'nl_system');
+mseyn_n2 = test_sigma(Vkernel_n2, 2, 0.2,1.6, 'nl_system');
 
 figure;
-loglog(mseyn03(:,1),sqrt((mseyn03(:,2)),'-or');hold
+loglog(mseyn03(:,1),sqrt(mseyn03(:,2)),'-or');hold
 xl = xlim;
-xl(1) = mseyn02(1,1);
-xl(2) = mseyn02(end,1);
+xl(1) = mseyn03(1,1);
+xl(2) = mseyn03(end,1);
 xlim(xl);
-loglog(mseyn06(:,1),sqrt((mseyn06(:,2)),'-or');
+loglog(mseyn06(:,1),sqrt(mseyn06(:,2)),'-or');
 loglog(mseyn12(:,1),sqrt(mseyn12(:,2)),'-or');
-loglog(mseyn24(:,1),sqrt(mseyn24(:,2)),'-or');
 
 loglog(mseyn_n2(:,1),mseyn_n2(:,2),'-xb');
 

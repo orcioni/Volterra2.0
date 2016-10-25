@@ -58,8 +58,8 @@ mseyn_n2 = test_sigma(Vkernel_n2, 3, 0.2,3, 'nl_system');
 figure;
 loglog(mseyn04(:,1),mseyn04(:,2),'-or');hold
 xl = xlim;
-xl(1) = mseyn02(1,1);
-xl(2) = mseyn02(end,1);
+xl(1) = mseyn04(1,1);
+xl(2) = mseyn04(end,1);
 xlim(xl);
 loglog(mseyn08(:,1),mseyn08(:,2),'-or');
 loglog(mseyn16(:,1),mseyn16(:,2),'-or');
