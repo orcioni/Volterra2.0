@@ -76,7 +76,11 @@ function [Vkernel, Wkernel] = ident_volt_20(order,memspan,varargin)
         %% new format: noise in input function parameters
         if ischar(varargin{2})
             xn = varargin{1};
-            yn = feval(varargin{2},xn);
+        %% VoltFilt works only with vector argument
+        %% so we make feval working alsways on vector
+        for i = 1:order+1
+          yn(:,i) = feval(des_system, xn(:,i));
+        end
         else
             xn = varargin{1};
             yn = varargin{2};
