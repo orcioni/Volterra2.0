@@ -1,5 +1,5 @@
 % Copyright (C) 2006 Massimiliano Pirani
-% Copyright (C) 2014-2016 Simone Orcioni
+% Copyright (C) 2014-2017 Simone Orcioni
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,9 @@
 %
 % order is the order of the kernel to be identified
 %
-% memspan is the memory span of the kernel
+% memspan is the memory span of the kernels
+% if a vector, its values will be assigned to each kernel with this order
+% memspan(i) -> kernel_i
 %
 % input_vector is the input vector to be used in the identification
 %
@@ -49,6 +51,9 @@
 
 function [Vkernel, Wkernel] = ident_volt(order,memspan,varargin)
 
+if length(memspan) == 1
+    memspan = repmat(memspan,order,1);
+end
 switch nargin
     case 5
         sigma_noise = varargin{1};
@@ -92,34 +97,34 @@ if order >= 0
 end
 
 if order >= 1
-	Wkernel.k1 = LeeSch1(xn,yn,1,memspan-1,A,swap,0);
+	Wkernel.k1 = LeeSch1(xn,yn,1,memspan(1)-1,A,swap,0);
 end
 
 if order >= 2
-	Wkernel.k2=zeros(memspan,memspan);
-	koff2     = LeeSch2(xn,yn,1,memspan-1,A,swap,0);
-	kdiag2    = VWdiag2(xn,yn,1,memspan-1,A,0,Wkernel.k0);
+	Wkernel.k2=zeros(memspan(2),memspan(2));
+	koff2     = LeeSch2(xn,yn,1,memspan(2)-1,A,swap,0);
+	kdiag2    = VWdiag2(xn,yn,1,memspan(2)-1,A,0,Wkernel.k0);
 	Wkernel.k2= NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 end
 
 if order >= 3
-	Wkernel.k3=zeros(memspan,memspan,memspan);
-	koff3     = LeeSch3(xn,yn,1,memspan-1,A,swap,0);
-	kdiag3    = VWdiag3(xn,yn,1,memspan-1,A,0,Wkernel.k1);
+	Wkernel.k3=zeros(memspan(3),memspan(3),memspan(3));
+	koff3     = LeeSch3(xn,yn,1,memspan(3)-1,A,swap,0);
+	kdiag3    = VWdiag3(xn,yn,1,memspan(3)-1,A,0,Wkernel.k1);
 	Wkernel.k3= NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 end
 
 if order >= 4
-	Wkernel.k4=zeros(memspan,memspan,memspan,memspan);
-	koff4     = LeeSch4(xn,yn,1,memspan-1,A,swap,0);
-	kdiag4    = VWdiag4(xn,yn,1,memspan-1,A,0,Wkernel.k0,Wkernel.k2);
+	Wkernel.k4=zeros(memspan(4),memspan(4),memspan(4),memspan(4));
+	koff4     = LeeSch4(xn,yn,1,memspan(4)-1,A,swap,0);
+	kdiag4    = VWdiag4(xn,yn,1,memspan(4)-1,A,0,Wkernel.k0,Wkernel.k2);
 	Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
 end
 
 if order >= 5
-	Wkernel.k5=zeros(memspan,memspan,memspan,memspan,memspan);
-	koff5 = VWoffdiag(xn,yn,5,1,length(Wkernel.k5)-1,A,swap,0);
-	kdiag5     = VWdiag(xn,yn,5,1,length(Wkernel.k5)-1,A,0,Wkernel.k1,Wkernel.k3);
+	Wkernel.k5=zeros(memspan(5),memspan(5),memspan(5),memspan(5),memspan(5));
+	koff5 = VWoffdiag(xn,yn,5,1,memspan(5)-1,A,swap,0);
+	kdiag5     = VWdiag(xn,yn,5,1,memspan(5)-1,A,0,Wkernel.k1,Wkernel.k3);
 	Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
 end
 

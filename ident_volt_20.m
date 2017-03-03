@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2016 Simone Orcioni
+% Copyright (C) 2014-2017 Simone Orcioni
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,9 @@
 %
 % order is the order of the kernel to be identified
 %
-% memspan is the memory span of the kernel
+% memspan is the memory span of the kernels
+% if a vector, its values will be assigned to each kernel with this order
+% memspan(i) -> kernel_i
 %
 % input_matrix is the matrix with the vectors to be used in the identification
 %
@@ -49,6 +51,10 @@
 %
 
 function [Vkernel, Wkernel] = ident_volt_20(order,memspan,varargin)
+
+if length(memspan) == 1
+    memspan = repmat(memspan,order,1);
+end
 
   switch nargin
     case 5
@@ -106,138 +112,80 @@ function [Vkernel, Wkernel] = ident_volt_20(order,memspan,varargin)
 
   if order >= 1
       k0 = LeeSch0(yn(:,2),1);
-      Wkernel.k1 = LeeSch1(xn(:,2),yn(:,2),1,memspan-1,A(2),swap,0);
+      Wkernel.k1 = LeeSch1(xn(:,2),yn(:,2),1,memspan(1)-1,A(2),swap,0);
       [Vkernel.h0, Vkernel.h1] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1);
   end
 
   if order >= 2
-      Wkernel.k2=zeros(memspan,memspan);
+      Wkernel.k2=zeros(memspan(2),memspan(2));
       k0 = LeeSch0(yn(:,3),1);
-      k1 = LeeSch1(xn(:,3),yn(:,3),1,memspan-1,A(3),swap,0);
-      koff2     = LeeSch2(xn(:,3),yn(:,3),1,memspan-1,A(3),swap,0);
-      kdiag2    = VWdiag2(xn(:,3),yn(:,3),1,memspan-1,A(3),0, k0);
+      k1 = LeeSch1(xn(:,3),yn(:,3),1,memspan(1)-1,A(3),swap,0);
+      koff2     = LeeSch2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),swap,0);
+      kdiag2    = VWdiag2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),0, k0);
       Wkernel.k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
       [Vkernel.h0, Vkernel.h1, Vkernel.h2] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2);
   end
 
   if order >= 3
-      Wkernel.k3=zeros(memspan,memspan,memspan);
+      Wkernel.k3=zeros(memspan(3),memspan(3),memspan(3));
 
       k0 = LeeSch0(yn(:,4),1);
 
-      k1 = LeeSch1(xn(:,4),yn(:,4),1,memspan-1,A(4),swap,0);
+      k1 = LeeSch1(xn(:,4),yn(:,4),1,memspan(1)-1,A(4),swap,0);
 
-      koff2     = LeeSch2(xn(:,4),yn(:,4),1,memspan-1,A(4),swap,0);
-      kdiag2    = VWdiag2(xn(:,4),yn(:,4),1,memspan-1,A(4),0, k0);
+      koff2     = LeeSch2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),swap,0);
+      kdiag2    = VWdiag2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),0, k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3      = LeeSch3(xn(:,4),yn(:,4),1,memspan-1,A(4),swap,0);
-      kdiag3     = VWdiag3(xn(:,4),yn(:,4),1,memspan-1,A(4),0,k1);
+      koff3      = LeeSch3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),swap,0);
+      kdiag3     = VWdiag3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),0,k1);
       Wkernel.k3 = NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
       [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3);
   end
 
   if order >= 4
-      Wkernel.k4=zeros(memspan,memspan,memspan,memspan);
+      Wkernel.k4=zeros(memspan(4),memspan(4),memspan(4),memspan(4));
 
       k0 = LeeSch0(yn(:,5),1);
 
-      k1 = LeeSch1(xn(:,5),yn(:,5),1,memspan-1,A(5),swap,0);
+      k1 = LeeSch1(xn(:,5),yn(:,5),1,memspan(1)-1,A(5),swap,0);
 
-      koff2     = LeeSch2(xn(:,5),yn(:,5),1,memspan-1,A(5),swap,0);
-      kdiag2    = VWdiag2(xn(:,5),yn(:,5),1,memspan-1,A(5),0, k0);
+      koff2     = LeeSch2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),swap,0);
+      kdiag2    = VWdiag2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),0, k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3     = LeeSch3(xn(:,5),yn(:,5),1,memspan-1,A(5),swap,0);
-      kdiag3    = VWdiag3(xn(:,5),yn(:,5),1,memspan-1,A(5),0,k1);
+      koff3     = LeeSch3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),swap,0);
+      kdiag3    = VWdiag3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),0,k1);
       k3 = NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-      koff4     = LeeSch4(xn(:,5),yn(:,5),1,memspan-1,A(5),swap,0);
-      kdiag4    = VWdiag4(xn(:,5),yn(:,5),1,memspan-1,A(5),0,k0,k2);
+      koff4     = LeeSch4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),swap,0);
+      kdiag4    = VWdiag4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),0,k0,k2);
       Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
 
       [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4);
   end
 
   if order >= 5
-      Wkernel.k5=zeros(memspan,memspan,memspan,memspan,memspan);
+      Wkernel.k5=zeros(memspan(5),memspan(5),memspan(5),memspan(5),memspan(5));
       k0 = LeeSch0(yn(:,6),1);
 
-      k1 = LeeSch1(xn(:,6),yn(:,6),1,memspan-1,A(6),swap,0);
+      k1 = LeeSch1(xn(:,6),yn(:,6),1,memspan(1)-1,A(6),swap,0);
 
-      koff2     = LeeSch2(xn(:,6),yn(:,6),1,memspan-1,A(6),swap,0);
-      kdiag2    = VWdiag2(xn(:,6),yn(:,6),1,memspan-1,A(6),0, k0);
+      koff2     = LeeSch2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),swap,0);
+      kdiag2    = VWdiag2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),0, k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3     = LeeSch3(xn(:,6),yn(:,6),1,memspan-1,A(6),swap,0);
-      kdiag3    = VWdiag3(xn(:,6),yn(:,6),1,memspan-1,A(6),0,k1);
+      koff3     = LeeSch3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),swap,0);
+      kdiag3    = VWdiag3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),0,k1);
       k3= NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-      koff4     = LeeSch4(xn(:,6),yn(:,6),1,memspan-1,A(6),swap,0);
-      kdiag4    = VWdiag4(xn(:,6),yn(:,6),1,memspan-1,A(6),0,k0,k2);
+      koff4     = LeeSch4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),swap,0);
+      kdiag4    = VWdiag4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),0,k0,k2);
 
-      koff5     = LeeSch5(xn(:,6),yn(:,6),1,memspan-1,A(6),swap,0);
-      kdiag5    = VWdiag5(xn(:,6),yn(:,6),1,memspan-1,A(6),0,k1,k3);
+      koff5     = LeeSch5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),swap,0);
+      kdiag5    = VWdiag5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),0,k1,k3);
       Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
       [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4,Vkernel.h5] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
   end
 end
-
-%!demo
-%! addpath('./examples');
-%! memspan=10;
-%! sigma_noise=[0.2,0.4,0.8];
-
-%! %Identification with multiple variances
-%! Vkernel_n2 = ident_volt_20(2,memspan,sigma_noise,1e6,'volt2_system');
-
-
-%! %Identification with sigma = 0.2;
-%! Vkernel02 = ident_volt(2,memspan,sigma_noise(1),1e6,'volt2_system');
-%! %Identification with sigma = 0.4;
-%! Vkernel04 = ident_volt(2,memspan,sigma_noise(2),1e6,'volt2_system');
-%! %Identification with sigma = 0.8;
-%! Vkernel08 = ident_volt(2,memspan,sigma_noise(3),1e6,'volt2_system');
-
-%! xn = randn(1e6,1);
-
-%! %Test of Volterra system  identified whith sigma = 0.2;
-%! mseyn02 = test_sigma(Vkernel02, 2, 0.2,1.6, 'volt2_system');
-%! %Test of Volterra system  identified whith sigma = 0.4;
-%! mseyn04 = test_sigma(Vkernel04, 2, 0.2,1.6, 'volt2_system');
-%! %Test of Volterra system  identified whith sigma = 0.8;
-%! mseyn08 = test_sigma(Vkernel08, 2, 0.2,1.6, 'volt2_system');
-%! %Test of Volterra system  identified whith multiple variances;
-%! mseyn_n2 = test_sigma(Vkernel_n2, 2, 0.2,1.6, 'volt2_system');
-
-
-%! h1  = [0.2264190   0.8539435   1.0243269   0.1957670  -0.3426567  -0.0456011 0.1097026  -0.0088268  -0.0177919   0.0047174];
-%! h2n = h1'*h1;
-%! h2 =  9/54*h2n;
-
-%! %Error on kernels
-%! msenh3(1)=mse(Vkernel02.h2,h2)/mse(h2);
-%! msenh3(2)=mse(Vkernel04.h2,h2)/mse(h2);
-%! msenh3(3)=mse(Vkernel08.h2,h2)/mse(h2);
-
-%! msenh3_n2=mse(Vkernel_n2.h2,h2)/mse(h2);
-
-%! msenh1(1)=mse(Vkernel02.h1,h1)/mse(h1);
-%! msenh1(2)=mse(Vkernel04.h1,h1)/mse(h1);
-%! msenh1(3)=mse(Vkernel08.h1,h1)/mse(h1);
-
-%! msenh1_n2=mse(Vkernel_n2.h1,h1)/mse(h1);
-
-
-
-%! figure;
-%! loglog(mseyn02(:,1),sqrt(mseyn02(:,2)),'-or');hold;
-%! xl = xlim;
-%! xl(1) = mseyn02(1,1);
-%! xl(2) = mseyn02(end,1);
-%! xlim(xl);
-%! loglog(mseyn04(:,1),sqrt(mseyn04(:,2)),'-or');
-%! loglog(mseyn08(:,1),sqrt(mseyn08(:,2)),'-or');
-
-%! loglog(mseyn_n2(:,1),sqrt(mseyn_n2(:,2)),'-xb');
