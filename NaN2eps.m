@@ -1,3 +1,8 @@
+%function k=NaN2eps(k)
+%
+%Every NaN in the array is substituted with eps values.
+
+
 % Copyright (C) 2006 Massimiliano Pirani
 %
 %  This program is free software; you can redistribute it and/or modify
@@ -13,10 +18,6 @@
 %  You should have received a copy of the GNU General Public License along
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-%function k=NaN2eps(k)
-%
-%Every NaN in the array is substituted with eps values.
 
 function k=NaN2eps(k)
 

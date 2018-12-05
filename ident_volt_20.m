@@ -1,32 +1,3 @@
-% Copyright (C) 2014-2017 Simone Orcioni
-%
-%  This program is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  This program is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  You should have received a copy of the GNU General Public License along
-%  with this program; if not, write to the Free Software Foundation, Inc.,
-%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following papers:
-% Simone Orcioni. Improving the approximation ability of Volterra series identified
-% with a cross-correlation method. Nonlinear Dynamics, 2014.
-%
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in
-% Lee-Schetzen method for Volterra filter identification. Multidimensional
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
-
 %function [Vkernel, Wkernel] = ident_volt_20(order,memspan,input_matrix,output_matrix)
 %function [Vkernel, Wkernel] = ident_volt_20(order,memspan,input_matrix,des_system)
 %function [Vkernel, Wkernel] = ident_volt_20(order,memspan,sigma_noise,dim_input,des_system)
@@ -49,11 +20,47 @@
 %
 % dim_input is the length of the input vector to be used in the identification
 %
+% If you want to contact the authors, please write to s.orcioni@univpm.it,
+% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
+% via Brecce Bianche, 12 - 60131 Ancona, Italy.
+% If you are using this program for a scientific work, we encourage you to cite
+% the following paper:
+%
+% Simone Orcioni. Improving the approximation ability of Volterra series 
+% identified with a cross-correlation method. Nonlinear Dynamics, 2014.
+%
+%﻿Orcioni, S., Terenzi, A., Cecchi, S., Piazza, F., & Carini, A. (2018). 
+% Identification of Volterra Models of Tube Audio Devices using 
+% Multiple-Variance Method. Journal of the Audio Engineering Society, 
+% 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
+
+
+% Copyright (C) 2014-2017 Simone Orcioni
+%
+%  This program is free software; you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation; either version 2 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License along
+%  with this program; if not, write to the Free Software Foundation, Inc.,
+%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 function [Vkernel, Wkernel] = ident_volt_20(order,memspan,varargin)
 
-if length(memspan) == 1
-    memspan = repmat(memspan,order,1);
+if isscalar(memspan)
+        memspan = repmat(memspan,order,1);
+        delays = zeros(order,1);
+elseif isvector(memspan)
+        delays = zeros(order,1);
+else
+    delays = memspan(2,:);
+    memspan = memspan(1,:);
 end
 
   switch nargin
@@ -112,18 +119,18 @@ end
 
   if order >= 1
       k0 = LeeSch0(yn(:,2),1);
-      Wkernel.k1 = LeeSch1(xn(:,2),yn(:,2),1,memspan(1)-1,A(2),swap,0);
-      [Vkernel.h0, Vkernel.h1] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1);
+      Wkernel.k1 = LeeSch1(xn(:,2),yn(:,2),1,memspan(1)-1,A(2),swap,delays(1));
+      [Vkernel.h0, Vkernel.h1] = Wiener2Volterra_20(delays, A, Wkernel.k0, Wkernel.k1);
   end
 
   if order >= 2
       Wkernel.k2=zeros(memspan(2),memspan(2));
       k0 = LeeSch0(yn(:,3),1);
-      k1 = LeeSch1(xn(:,3),yn(:,3),1,memspan(1)-1,A(3),swap,0);
-      koff2     = LeeSch2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),swap,0);
-      kdiag2    = VWdiag2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),0, k0);
+      k1 = LeeSch1(xn(:,3),yn(:,3),1,memspan(1)-1,A(3),swap,delays(1));
+      koff2     = LeeSch2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),swap,delays(2));
+      kdiag2    = VWdiag2(xn(:,3),yn(:,3),1,memspan(2)-1,A(3),delays(2), k0);
       Wkernel.k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
-      [Vkernel.h0, Vkernel.h1, Vkernel.h2] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2);
+      [Vkernel.h0, Vkernel.h1, Vkernel.h2] = Wiener2Volterra_20(delays, A, Wkernel.k0, Wkernel.k1, Wkernel.k2);
   end
 
   if order >= 3
@@ -131,17 +138,17 @@ end
 
       k0 = LeeSch0(yn(:,4),1);
 
-      k1 = LeeSch1(xn(:,4),yn(:,4),1,memspan(1)-1,A(4),swap,0);
+      k1 = LeeSch1(xn(:,4),yn(:,4),1,memspan(1)-1,A(4),swap,delays(1));
 
-      koff2     = LeeSch2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),swap,0);
-      kdiag2    = VWdiag2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),0, k0);
+      koff2     = LeeSch2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),swap,delays(2));
+      kdiag2    = VWdiag2(xn(:,4),yn(:,4),1,memspan(2)-1,A(4),delays(2), k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3      = LeeSch3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),swap,0);
-      kdiag3     = VWdiag3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),0,k1);
+      koff3      = LeeSch3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),swap,delays(3));
+      kdiag3     = VWdiag3(xn(:,4),yn(:,4),1,memspan(3)-1,A(4),[delays(1) delays(3)],k1);
       Wkernel.k3 = NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3);
+      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3] = Wiener2Volterra_20(delays, A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3);
   end
 
   if order >= 4
@@ -149,43 +156,43 @@ end
 
       k0 = LeeSch0(yn(:,5),1);
 
-      k1 = LeeSch1(xn(:,5),yn(:,5),1,memspan(1)-1,A(5),swap,0);
+      k1 = LeeSch1(xn(:,5),yn(:,5),1,memspan(1)-1,A(5),swap,delays(1));
 
-      koff2     = LeeSch2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),swap,0);
-      kdiag2    = VWdiag2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),0, k0);
+      koff2     = LeeSch2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),swap,delays(2));
+      kdiag2    = VWdiag2(xn(:,5),yn(:,5),1,memspan(2)-1,A(5),delays(2), k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3     = LeeSch3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),swap,0);
-      kdiag3    = VWdiag3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),0,k1);
+      koff3     = LeeSch3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),swap,delays(3));
+      kdiag3    = VWdiag3(xn(:,5),yn(:,5),1,memspan(3)-1,A(5),[delays(1) delays(3)],k1);
       k3 = NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-      koff4     = LeeSch4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),swap,0);
-      kdiag4    = VWdiag4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),0,k0,k2);
+      koff4     = LeeSch4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),swap,delays(4));
+      kdiag4    = VWdiag4(xn(:,5),yn(:,5),1,memspan(4)-1,A(5),[delays(2) delays(4)],k0,k2);
       Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
 
-      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4);
+      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4] = Wiener2Volterra_20(delays, A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4);
   end
 
   if order >= 5
       Wkernel.k5=zeros(memspan(5),memspan(5),memspan(5),memspan(5),memspan(5));
       k0 = LeeSch0(yn(:,6),1);
 
-      k1 = LeeSch1(xn(:,6),yn(:,6),1,memspan(1)-1,A(6),swap,0);
+      k1 = LeeSch1(xn(:,6),yn(:,6),1,memspan(1)-1,A(6),swap,delays(1));
 
-      koff2     = LeeSch2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),swap,0);
-      kdiag2    = VWdiag2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),0, k0);
+      koff2     = LeeSch2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),swap,delays(2));
+      kdiag2    = VWdiag2(xn(:,6),yn(:,6),1,memspan(2)-1,A(6),delays(2), k0);
       k2 = NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 
-      koff3     = LeeSch3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),swap,0);
-      kdiag3    = VWdiag3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),0,k1);
+      koff3     = LeeSch3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),swap,delays(3));
+      kdiag3    = VWdiag3(xn(:,6),yn(:,6),1,memspan(3)-1,A(6),[delays(1) delays(3)],k1);
       k3= NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 
-      koff4     = LeeSch4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),swap,0);
-      kdiag4    = VWdiag4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),0,k0,k2);
+      koff4     = LeeSch4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),swap,delays(4));
+      kdiag4    = VWdiag4(xn(:,6),yn(:,6),1,memspan(4)-1,A(6),[delays(2) delays(4)],k0,k2);
 
-      koff5     = LeeSch5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),swap,0);
-      kdiag5    = VWdiag5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),0,k1,k3);
+      koff5     = LeeSch5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),swap,delays(5));
+      kdiag5    = VWdiag5(xn(:,6),yn(:,6),1,memspan(5)-1,A(6),[delays(1) delays(3) delays(5)],k1,k3);
       Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
-      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4,Vkernel.h5] = Wiener2Volterra_20(A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
+      [Vkernel.h0, Vkernel.h1, Vkernel.h2, Vkernel.h3, Vkernel.h4,Vkernel.h5] = Wiener2Volterra_20(delays, A, Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
   end
 end

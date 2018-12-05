@@ -1,3 +1,8 @@
+% function [Mnan]=NaNmat(varargin)
+%
+% It behaves like zeros function but producing array of NaNs.
+% See zeros for more details.
+
 % Copyright (C) 2006 Massimiliano Pirani
 %
 %  This program is free software; you can redistribute it and/or modify
@@ -13,12 +18,6 @@
 %  You should have received a copy of the GNU General Public License along
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-
-% function [Mnan]=NaNmat(varargin)
-%
-% It behaves like zeros function but producing array of NaNs.
-% See zeros for more details.
 
 function [Mnan]=NaNmat(varargin)
 

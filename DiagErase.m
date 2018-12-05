@@ -1,5 +1,28 @@
+% function [d2,d3, ...,d10]=DiagErase(h2,h3,...,h10)
+%
+% This function puts NaN values on diagonal points of h2 whatever the dimension
+% of the array is (but less than 11), if it is provided as input alone.
+% If a list of crescent order arrays/kernels is provided as argument the 
+% output will be the corresponding resulting array list with diagonal points 
+% marked as NaN.
+%
+% If you want to contact the authors, please write to s.orcioni@univpm.it,
+% or Simone Orcioni, DII, Università Politecnica delle Marche,
+% via Brecce Bianche, 12 - 60131 Ancona, Italy.
+% If you are using this program for a scientific work, we encourage you to cite
+% the following paper (the file cite.bib, containing the reference in bibtex
+% format is also provided):
+%
+% Simone Orcioni. Improving the approximation ability of Volterra series 
+% identified with a cross-correlation method. Nonlinear Dynamics, 2014.
+%
+%﻿Orcioni, S., Terenzi, A., Cecchi, S., Piazza, F., & Carini, A. (2018). 
+% Identification of Volterra Models of Tube Audio Devices using 
+% Multiple-Variance Method. Journal of the Audio Engineering Society, 
+% 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
+
 % Copyright (C) 2006 Massimiliano Pirani
-% Copyright (C) 2014 Simone Orcioni
+% Copyright (C) 2018 Simone Orcioni
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -14,25 +37,6 @@
 %  You should have received a copy of the GNU General Public License along
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following paper (the file cite.bib, containing the reference in bibtex
-% format is also provided):
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in 
-% Lee-Schetzen method for Volterra filter identification. Multidimensional 
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
-% function [d2,d3, ...,d10]=DiagErase(h2,h3,...,h10)
-%
-% This function puts NaN values on diagonal points of h2 whatever the dimension
-% of the array is (but less than 11), if it is provided as input alone.
-% If a list of crescent order arrays/kernels is provided as argument the 
-% output will be the corresponding resulting array list with diagonal points 
-% marked as NaN.
-
 
 function varargout=DiagErase(h2,h3,h4,h5,h6,h7,h8,h9,h10)
 

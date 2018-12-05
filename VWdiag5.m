@@ -1,29 +1,3 @@
-% Copyright (C) 2006 Massimiliano Pirani
-%
-%  This program is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  This program is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  You should have received a copy of the GNU General Public License along
-%  with this program; if not, write to the Free Software Foundation, Inc.,
-%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following paper (the file cite.bib, containing the reference in bibtex
-% format is also provided):
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in 
-% Lee-Schetzen method for Volterra filter identification. Multidimensional 
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
 % function diag5=VWdiag5(xn, yn, os, R, A, delay, k1, k3)
 %
 % diag5 is the fifth order kernel of Wiener series according to our method,
@@ -52,22 +26,67 @@
 %
 % k1 and k3 are previously obtained Wiener kernels of the first and
 % third order respectively.
+%
+% If you want to contact the authors, please write to s.orcioni@univpm.it,
+% or Simone Orcioni, DII, Università Politecnica delle Marche,
+% via Brecce Bianche, 12 - 60131 Ancona, Italy.
+% If you are using this program for a scientific work, we encourage you to cite
+% the following paper (the file cite.bib, containing the reference in bibtex
+% format is also provided):
+%
+% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in
+% Lee-Schetzen method for Volterra filter identification. Multidimensional
+% Systems and Signal Processing, 16(3):265-284, 2005.
+%
+% Simone Orcioni. Improving the approximation ability of Volterra series 
+% identified with a cross-correlation method. Nonlinear Dynamics, 2014.
+%
+%﻿Orcioni, S., Terenzi, A., Cecchi, S., Piazza, F., & Carini, A. (2018). 
+% Identification of Volterra Models of Tube Audio Devices using 
+% Multiple-Variance Method. Journal of the Audio Engineering Society, 
+% 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
+
+% Copyright (C) 2006 Massimiliano Pirani
+% Copyright (C) 2017 Simone Orcioni
+%
+%  This program is free software; you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation; either version 2 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License along
+%  with this program; if not, write to the Free Software Foundation, Inc.,
+%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 function diag5=VWdiag5(xn,yn,os,R,A,delay,k1,k3)
 
+if not(isscalar(delay))
+    delay5 = delay(3);
+    delay53 = delay(3)-delay(2);
+    delay51 = delay(3)-delay(1);
+else
+    delay5 = delay;
+    delay53 = delay;
+    delay51 = delay;
+end
 diag5=NaNmat(R+1,R+1,R+1,R+1,R+1);   
 
 A5=A*A*A*A*A;
 A2=A*A;
 
 for sgm1=0:R
-    p1=[zeros(sgm1,1);xn(os:end-sgm1-delay)];
+    p1=[zeros(sgm1,1);xn(os:end-sgm1-delay5)];
     for sgm2=sgm1:R
-        p2=[zeros(sgm2,1);xn(os:end-sgm2-delay)];
+        p2=[zeros(sgm2,1);xn(os:end-sgm2-delay5)];
         for sgm3=sgm2:R
-            p3=[zeros(sgm3,1);xn(os:end-sgm3-delay)];
+            p3=[zeros(sgm3,1);xn(os:end-sgm3-delay5)];
             for sgm4=sgm3:R
-                p4=[zeros(sgm4,1);xn(os:end-sgm4-delay)];
+                p4=[zeros(sgm4,1);xn(os:end-sgm4-delay5)];
                 for sgm5=sgm4:R
                     ind=sort([sgm1 sgm2 sgm3 sgm4 sgm5]);
                     if (ind(5)>ind(4)) && (ind(4)>ind(3)) && (ind(3)>ind(2)) && (ind(2)>ind(1)) 
@@ -79,26 +98,26 @@ for sgm1=0:R
                             p2.*...
                             p3.*...
                             p4.*...
-                            [zeros(sgm5,1);xn(os:end-sgm5-delay)].*...
-                            yn(os+delay:end)                               )...
+                            [zeros(sgm5,1);xn(os:end-sgm5-delay5)].*...
+                            yn(os+delay5:end)                               )...
                             -1/20/A*(...
-                                                  k3(Sgm3,Sgm2,Sgm1)*(sgm4==sgm5)...
-                                                 +k3(Sgm4,Sgm2,Sgm1)*(sgm3==sgm5)...
-                                                 +k3(Sgm5,Sgm2,Sgm1)*(sgm3==sgm4)...
-                                                 +k3(Sgm4,Sgm3,Sgm1)*(sgm2==sgm5)...
-                                                 +k3(Sgm5,Sgm3,Sgm1)*(sgm2==sgm4)...
-                                                 +k3(Sgm5,Sgm4,Sgm1)*(sgm2==sgm3)...
-                                                 +k3(Sgm4,Sgm3,Sgm2)*(sgm1==sgm5)...
-                                                 +k3(Sgm5,Sgm3,Sgm2)*(sgm1==sgm4)...
-                                                 +k3(Sgm5,Sgm4,Sgm2)*(sgm1==sgm3)...
-                                                 +k3(Sgm5,Sgm4,Sgm3)*(sgm1==sgm2)...
+                                                  k3(Sgm3+delay53,Sgm2+delay53,Sgm1+delay53)*(sgm4==sgm5)...
+                                                 +k3(Sgm4+delay53,Sgm2+delay53,Sgm1+delay53)*(sgm3==sgm5)...
+                                                 +k3(Sgm5+delay53,Sgm2+delay53,Sgm1+delay53)*(sgm3==sgm4)...
+                                                 +k3(Sgm4+delay53,Sgm3+delay53,Sgm1+delay53)*(sgm2==sgm5)...
+                                                 +k3(Sgm5+delay53,Sgm3+delay53,Sgm1+delay53)*(sgm2==sgm4)...
+                                                 +k3(Sgm5+delay53,Sgm4+delay53,Sgm1+delay53)*(sgm2==sgm3)...
+                                                 +k3(Sgm4+delay53,Sgm3+delay53,Sgm2+delay53)*(sgm1==sgm5)...
+                                                 +k3(Sgm5+delay53,Sgm3+delay53,Sgm2+delay53)*(sgm1==sgm4)...
+                                                 +k3(Sgm5+delay53,Sgm4+delay53,Sgm2+delay53)*(sgm1==sgm3)...
+                                                 +k3(Sgm5+delay53,Sgm4+delay53,Sgm3+delay53)*(sgm1==sgm2)...
                                                            )...
                                  -1/120/A2*(...
-                            k1(Sgm1)*((sgm2==sgm5)*(sgm3==sgm4)+(sgm3==sgm5)*(sgm2==sgm4)+(sgm4==sgm5)*(sgm2==sgm3))+...
-                            k1(Sgm2)*((sgm1==sgm5)*(sgm3==sgm4)+(sgm3==sgm5)*(sgm1==sgm4)+(sgm4==sgm5)*(sgm1==sgm3))+...
-                            k1(Sgm3)*((sgm1==sgm5)*(sgm2==sgm4)+(sgm2==sgm5)*(sgm1==sgm4)+(sgm4==sgm5)*(sgm1==sgm2))+...
-                            k1(Sgm4)*((sgm1==sgm5)*(sgm2==sgm3)+(sgm2==sgm5)*(sgm1==sgm3)+(sgm3==sgm5)*(sgm1==sgm2))+...
-                            k1(Sgm5)*((sgm1==sgm2)*(sgm3==sgm4)+(sgm1==sgm3)*(sgm2==sgm4)+(sgm1==sgm4)*(sgm2==sgm3))...
+                            k1(Sgm1+delay51)*((sgm2==sgm5)*(sgm3==sgm4)+(sgm3==sgm5)*(sgm2==sgm4)+(sgm4==sgm5)*(sgm2==sgm3))+...
+                            k1(Sgm2+delay51)*((sgm1==sgm5)*(sgm3==sgm4)+(sgm3==sgm5)*(sgm1==sgm4)+(sgm4==sgm5)*(sgm1==sgm3))+...
+                            k1(Sgm3+delay51)*((sgm1==sgm5)*(sgm2==sgm4)+(sgm2==sgm5)*(sgm1==sgm4)+(sgm4==sgm5)*(sgm1==sgm2))+...
+                            k1(Sgm4+delay51)*((sgm1==sgm5)*(sgm2==sgm3)+(sgm2==sgm5)*(sgm1==sgm3)+(sgm3==sgm5)*(sgm1==sgm2))+...
+                            k1(Sgm5+delay51)*((sgm1==sgm2)*(sgm3==sgm4)+(sgm1==sgm3)*(sgm2==sgm4)+(sgm1==sgm4)*(sgm2==sgm3))...
                                                            );
                     end                       
                 end

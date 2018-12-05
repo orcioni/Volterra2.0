@@ -1,3 +1,11 @@
+%function [equal,err]=nanisequal(a,b)
+%
+% Compares two arrays a and b, which can contain NaNs.
+% equal is a flag which is 1 if the arrays are identical.
+% If equal is 0, err will contain the maximun of absolute difference
+% between the arrays. 
+% See isequal for other information.
+
 % Copyright (C) 2006 Massimiliano Pirani
 %
 %  This program is free software; you can redistribute it and/or modify
@@ -13,14 +21,6 @@
 %  You should have received a copy of the GNU General Public License along
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-%function [equal,err]=nanisequal(a,b)
-%
-% Compares two arrays a and b, which can contain NaNs.
-% equal is a flag which is 1 if the arrays are identical.
-% If equal is 0, err will contain the maximun of absolute difference
-% between the arrays. 
-% See isequal for other information.
 
 
 function [equal,err]=nanisequal(a,b)

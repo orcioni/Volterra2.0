@@ -1,30 +1,3 @@
-% Copyright (C) 2006 Massimiliano Pirani
-%
-%  This program is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  This program is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  You should have received a copy of the GNU General Public License along
-%  with this program; if not, write to the Free Software Foundation, Inc.,
-%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following paper (the file cite.bib, containing the reference in bibtex
-% format is also provided):
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in 
-% Lee-Schetzen method for Volterra filter identification. Multidimensional 
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
-
 % function [yn,y0,y1,y2,y3,y4,y5,y6,y7,y8,y9,y10] = 
 %     BasicVoltFilt(xn, kernels, ord, delay)
 %
@@ -59,6 +32,38 @@
 % Also a response for each Volterra filter series component can be obtained 
 % in y0, y1, ... yN being N the order of the N-th component: 
 % yn = sum(y0,...,yN).
+%
+% If you want to contact the authors, please write to s.orcioni@univpm.it,
+% or Simone Orcioni, DII, Università Politecnica delle Marche,
+% via Brecce Bianche, 12 - 60131 Ancona, Italy.
+% If you are using this program for a scientific work, we encourage you to cite
+% the following paper (the file cite.bib, containing the reference in bibtex
+% format is also provided):
+%
+% Simone Orcioni. Improving the approximation ability of Volterra series 
+% identified with a cross-correlation method. Nonlinear Dynamics, 2014.
+%
+%﻿Orcioni, S., Terenzi, A., Cecchi, S., Piazza, F., & Carini, A. (2018). 
+% Identification of Volterra Models of Tube Audio Devices using 
+% Multiple-Variance Method. Journal of the Audio Engineering Society, 
+% 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
+
+% Copyright (C) 2006 Massimiliano Pirani
+% Copyright (C) 2018 Simone Orcioni
+%
+%  This program is free software; you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation; either version 2 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License along
+%  with this program; if not, write to the Free Software Foundation, Inc.,
+%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 function varargout=BasicVoltFilt(xn,kernels,ord,delay)
 
@@ -101,7 +106,7 @@ A=1;
 if ord>0
     tic
     h1=load(nomefile,'h1');h1=h1.h1;
-    varargout{3}=filter(h1,1,xn)*A;
+    varargout{3} = filter(h1(delay+1:end),1,xn)*A;
     clear h1;
 end
 

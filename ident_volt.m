@@ -1,33 +1,3 @@
-% Copyright (C) 2006 Massimiliano Pirani
-% Copyright (C) 2014-2017 Simone Orcioni
-%
-%  This program is free software; you can redistribute it and/or modify
-%  it under the terms of the GNU General Public License as published by
-%  the Free Software Foundation; either version 2 of the License, or
-%  (at your option) any later version.
-%
-%  This program is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%  GNU General Public License for more details.
-%
-%  You should have received a copy of the GNU General Public License along
-%  with this program; if not, write to the Free Software Foundation, Inc.,
-%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following papers:
-% Simone Orcioni. Improving the approximation ability of Volterra series identified
-% with a cross-correlation method. Nonlinear Dynamics, 2014.
-%
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in
-% Lee-Schetzen method for Volterra filter identification. Multidimensional
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
-
 %function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,output_vector)
 %function [Vkernel, Wkernel] = ident_volt(order,memspan,input_vector,des_system)
 %function [Vkernel, Wkernel] = ident_volt(order,memspan,sigma_noise,dim_input,des_system)
@@ -48,12 +18,54 @@
 % sigmanoise is the vector of the sigma of the noise to be used in the identification
 %
 % dim_input is the length of the input vector to be used in the identification
+%
+% If you want to contact the authors, please write to s.orcioni@univpm.it,
+% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
+% via Brecce Bianche, 12 - 60131 Ancona, Italy.
+% If you are using this program for a scientific work, we encourage you to cite
+% the following papers:
+%
+% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in
+% Lee-Schetzen method for Volterra filter identification. Multidimensional
+% Systems and Signal Processing, 16(3):265-284, 2005.
+%
+% Simone Orcioni. Improving the approximation ability of Volterra series 
+% identified with a cross-correlation method. Nonlinear Dynamics, 2014.
+%
+%﻿Orcioni, S., Terenzi, A., Cecchi, S., Piazza, F., & Carini, A. (2018). 
+% Identification of Volterra Models of Tube Audio Devices using 
+% Multiple-Variance Method. Journal of the Audio Engineering Society, 
+% 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
+
+% Copyright (C) 2006 Massimiliano Pirani
+% Copyright (C) 2014-2017 Simone Orcioni
+%
+%  This program is free software; you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation; either version 2 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License along
+%  with this program; if not, write to the Free Software Foundation, Inc.,
+%  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 function [Vkernel, Wkernel] = ident_volt(order,memspan,varargin)
 
-if length(memspan) == 1
-    memspan = repmat(memspan,order,1);
+if isscalar(memspan)
+        memspan = repmat(memspan,order,1);
+        delays = zeros(order,1);
+elseif isvector(memspan)
+        delays = zeros(order,1);
+else
+    delays = memspan(2,:);
+    memspan = memspan(1,:);
 end
+
 switch nargin
     case 5
         sigma_noise = varargin{1};
@@ -97,34 +109,34 @@ if order >= 0
 end
 
 if order >= 1
-	Wkernel.k1 = LeeSch1(xn,yn,1,memspan(1)-1,A,swap,0);
+	Wkernel.k1 = LeeSch1(xn,yn,1,memspan(1)-1,A,swap,delays(1));
 end
 
 if order >= 2
 	Wkernel.k2=zeros(memspan(2),memspan(2));
-	koff2     = LeeSch2(xn,yn,1,memspan(2)-1,A,swap,0);
-	kdiag2    = VWdiag2(xn,yn,1,memspan(2)-1,A,0,Wkernel.k0);
+	koff2     = LeeSch2(xn,yn,1,memspan(2)-1,A,swap,delays(2));
+	kdiag2    = VWdiag2(xn,yn,1,memspan(2)-1,A,delays(2),Wkernel.k0);
 	Wkernel.k2= NaN2zero(symmetrize(koff2)) + NaN2zero(symmetrize(kdiag2));
 end
 
 if order >= 3
 	Wkernel.k3=zeros(memspan(3),memspan(3),memspan(3));
-	koff3     = LeeSch3(xn,yn,1,memspan(3)-1,A,swap,0);
-	kdiag3    = VWdiag3(xn,yn,1,memspan(3)-1,A,0,Wkernel.k1);
+	koff3     = LeeSch3(xn,yn,1,memspan(3)-1,A,swap,delays(3));
+	kdiag3    = VWdiag3(xn,yn,1,memspan(3)-1,A,[delays(1) delays(3)],Wkernel.k1);
 	Wkernel.k3= NaN2zero(symmetrize(koff3)) + NaN2zero(symmetrize(kdiag3));
 end
 
 if order >= 4
 	Wkernel.k4=zeros(memspan(4),memspan(4),memspan(4),memspan(4));
-	koff4     = LeeSch4(xn,yn,1,memspan(4)-1,A,swap,0);
-	kdiag4    = VWdiag4(xn,yn,1,memspan(4)-1,A,0,Wkernel.k0,Wkernel.k2);
+	koff4     = LeeSch4(xn,yn,1,memspan(4)-1,A,swap,delays(4));
+	kdiag4    = VWdiag4(xn,yn,1,memspan(4)-1,A,[delays(2) delays(4)],Wkernel.k0,Wkernel.k2);
 	Wkernel.k4= NaN2zero(symmetrize(koff4)) + NaN2zero(symmetrize(kdiag4));
 end
 
 if order >= 5
 	Wkernel.k5=zeros(memspan(5),memspan(5),memspan(5),memspan(5),memspan(5));
-	koff5 = VWoffdiag(xn,yn,5,1,memspan(5)-1,A,swap,0);
-	kdiag5     = VWdiag(xn,yn,5,1,memspan(5)-1,A,0,Wkernel.k1,Wkernel.k3);
+	koff5 = VWoffdiag(xn,yn,5,1,memspan(5)-1,A,swap,delays(5));
+	kdiag5     = VWdiag5(xn,yn,5,1,memspan(5)-1,A,[delays(1) delays(3) delays(5)],Wkernel.k1,Wkernel.k3);
 	Wkernel.k5= NaN2zero(symmetrize(koff5)) + NaN2zero(symmetrize(kdiag5));
 end
 
@@ -134,17 +146,17 @@ end
 
 switch(order)
 case 0
-	[Vkernel.h0] = Wiener2Volterra(A,Wkernel.k0);
+	[Vkernel.h0] = Wiener2Volterra(delays,A,Wkernel.k0);
 case 1
-	[Vkernel.h0,Vkernel.h1] = Wiener2Volterra(A,Wkernel.k0,Wkernel.k1);
+	[Vkernel.h0,Vkernel.h1] = Wiener2Volterra(delays,A,Wkernel.k0,Wkernel.k1);
 case 2
-	[Vkernel.h0,Vkernel.h1,Vkernel.h2] = Wiener2Volterra(A,Wkernel.k0,Wkernel.k1,Wkernel.k2);
+	[Vkernel.h0,Vkernel.h1,Vkernel.h2] = Wiener2Volterra(delays,A,Wkernel.k0,Wkernel.k1,Wkernel.k2);
 case 3
-	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3] = Wiener2Volterra(A,Wkernel.k0,Wkernel.k1,Wkernel.k2,Wkernel.k3);
+	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3] = Wiener2Volterra(delays,A,Wkernel.k0,Wkernel.k1,Wkernel.k2,Wkernel.k3);
 case 4
-	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3,Vkernel.h4] = Wiener2Volterra(A,Wkernel.k0,Wkernel.k1,Wkernel.k2,Wkernel.k3,Wkernel.k4);
+	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3,Vkernel.h4] = Wiener2Volterra(delays,A,Wkernel.k0,Wkernel.k1,Wkernel.k2,Wkernel.k3,Wkernel.k4);
 case 5
-	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3,Vkernel.h4,Vkernel.h5] =Wiener2Volterra(A,Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
+	[Vkernel.h0,Vkernel.h1,Vkernel.h2,Vkernel.h3,Vkernel.h4,Vkernel.h5] =Wiener2Volterra(delays,A,Wkernel.k0, Wkernel.k1, Wkernel.k2, Wkernel.k3, Wkernel.k4, Wkernel.k5);
 otherwise disp('Not a valid order');
 endswitch
 end

@@ -1,3 +1,9 @@
+% function [ks]=symmetrize(k)
+% k must be a n-th dimensional array whith N<=10.
+% ks is the array with N-1 NaNs points filled symmetrically where at
+% least a corresponding fundamental point in k can be found among the
+% permutations of their coordianates
+
 % Copyright (C) 2006 Massimiliano Pirani
 %
 %  This program is free software; you can redistribute it and/or modify
@@ -13,22 +19,6 @@
 %  You should have received a copy of the GNU General Public License along
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-%
-% If you want to contact the authors, please write to s.orcioni@univpm.it,
-% or Simone Orcioni, DEIT, Università Politecnica delle Marche,
-% via Brecce Bianche, 12 - 60131 Ancona, Italy.
-% If you are using this program for a scientific work, we encourage you to cite
-% the following paper (the file cite.bib, containing the reference in bibtex
-% format is also provided):
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in 
-% Lee-Schetzen method for Volterra filter identification. Multidimensional 
-% Systems and Signal Processing, 16(3):265-284, 2005.
-
-% function [ks]=symmetrize(k)
-% k must be a n-th dimensional array whith N<=10.
-% ks is the array with N-1 NaNs points filled symmetrically where at
-% least a corresponding fundamental point in k can be found among the
-% permutations of their coordianates
 
 function [ks]=symmetrize(k)
 

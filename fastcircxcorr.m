@@ -1,12 +1,4 @@
-% function kdiag=VWdiag(xn, yn, ord, os, R, delay, varargin)
-% Is a wrapper function to easily call a kernel diagonal identification of 
-% order from 2 to 5.
-% The input parameters are passed to the function WVdiagN of order N.
-% See VWdiagN functions help for details.
-% varagin should contain the list of lower order prevously identified Wiener
-% kernels, e.g.:
-% varargin={k0,k2,... k2n} or varargin={k1, .. k(2n+1)} where order 
-% N=2,3,4,5 and N=2n or N=2n+1
+%function [R, lags] = fastcircxcorr (X, Y, N, maxlag, method, swap)
 %
 % If you want to contact the authors, please write to s.orcioni@univpm.it,
 % or Simone Orcioni, DII, Università Politecnica delle Marche,
@@ -14,10 +6,6 @@
 % If you are using this program for a scientific work, we encourage you to cite
 % the following paper (the file cite.bib, containing the reference in bibtex
 % format is also provided):
-%
-% Simone Orcioni, Massimiliano Pirani, and Claudio Turchetti. Advances in
-% Lee-Schetzen method for Volterra filter identification. Multidimensional
-% Systems and Signal Processing, 16(3):265-284, 2005.
 %
 % Simone Orcioni. Improving the approximation ability of Volterra series 
 % identified with a cross-correlation method. Nonlinear Dynamics, 2014.
@@ -27,7 +15,10 @@
 % Multiple-Variance Method. Journal of the Audio Engineering Society, 
 % 66(10), 823–838. https://doi.org/10.17743/jaes.2018.0046
 
+
 % Copyright (C) 2006 Massimiliano Pirani
+% Copyright (C) 2018 Simone Orcioni
+% Copyright (C) 2018 Alberto Carini
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -43,17 +34,27 @@
 %  with this program; if not, write to the Free Software Foundation, Inc.,
 %  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-function kdiag=VWdiag(xn,yn,ord,os,R,A,delay,varargin)
 
-switch ord
-case 2
-    kdiag=VWdiag2(xn,yn,os,R,A,delay,varargin{1});
-case 3 
-    kdiag=VWdiag3(xn,yn,os,R,A,delay,varargin{1});
-case 4
-    kdiag=VWdiag4(xn,yn,os,R,A,delay,varargin{1},varargin{2});
-case 5
-    kdiag=VWdiag5(xn,yn,os,R,A,delay,varargin{1},varargin{2});
+function [R, lags] = fastcircxcorr (X, Y, N, maxlag, method, swap)
+
+R=zeros(maxlag+1,1);
+switch method
+    case 0 % biased result, i.e. divide by N for each element
+        for i=0:maxlag
+            R(i+1) = mean(Y.*circshift(X,i));
+        end
+    case 1 % unbiased result, i.e. divide by N-abs(lag)
+        for i=0:maxlag
+            R(i+1) = sum(Y.*circshift(X,i))/(N-i);
+        end
+    case 2 %coeff
+        for i=0:maxlag
+            R(i+1) = sum(Y.*circshift(X,i));
+        end
+        R = R/R(1);
+    otherwise
+        for i=0:maxlag
+            R(i+1) = sum(Y.*circshift(X,i));
+        end
 end
-
-    
+lags = 0:maxlag;
