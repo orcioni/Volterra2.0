@@ -76,16 +76,17 @@ mseyn_n2 = test_sigma(Vkernel_n2, 2, 0.2,1.6, 'volt2_system');
  h2n = h1'*h1;
  h2 =  9/54*h2n;
 
-fprintf('Error on kernels')
- msenh3(1)=mse(Vkernel02.h2,h2)/mse(h2);
- msenh3(2)=mse(Vkernel04.h2,h2)/mse(h2);
- msenh3(3)=mse(Vkernel08.h2,h2)/mse(h2);
+fprintf('Error on kernels');
 
- msenh3_n2=mse(Vkernel_n2.h2,h2)/mse(h2);
+ msenh2(1)=mse(Vkernel02.h2,h2)/mse(h2);
+ msenh2(2)=mse(Vkernel04.h2,h2)/mse(h2);
+ msenh2(3)=mse(Vkernel08.h2,h2)/mse(h2);
 
- msenh1(1)=mse(Vkernel02.h1,h1)/mse(h1);
- msenh1(2)=mse(Vkernel04.h1,h1)/mse(h1);
- msenh1(3)=mse(Vkernel08.h1,h1)/mse(h1);
+ msenh2_n2=mse(Vkernel_n2.h2,h2)/mse(h2);
+
+ msenh1(1)=mse(Vkernel02.h1,h1')/mse(h1);
+ msenh1(2)=mse(Vkernel04.h1,h1')/mse(h1);
+ msenh1(3)=mse(Vkernel08.h1,h1')/mse(h1);
 
  msenh1_n2=mse(Vkernel_n2.h1,h1)/mse(h1);
 

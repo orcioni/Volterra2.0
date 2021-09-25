@@ -3,6 +3,7 @@
 % e is the Mean Square Error between the two input arrays x and y
 
 % Copyright (C) 2006 Massimiliano Pirani
+% Copyright (C) 2021 Simone Orcioni
 %
 %  This program is free software; you can redistribute it and/or modify
 %  it under the terms of the GNU General Public License as published by
@@ -20,11 +21,13 @@
 
 function e=mse(x,y)
 
-if nargin==1,
+if (nargin==1)
     y=0;
 end
 
+if ~(size(x)==size(y))
+    y=y';
+end
+    
 e=(x-y).^2;
-s=size(e);
-e=reshape(e,prod(s),1);
-e=mean(e);
+e=mean(e,'all');
